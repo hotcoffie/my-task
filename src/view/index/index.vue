@@ -44,7 +44,7 @@
 		},
 		data() {
 			return {
-				code:'',
+				code: '',
 				img: require('../../img/logo.jpg'),
 				phoneNum: '',
 				phoneNumErr: '',
@@ -117,6 +117,9 @@
 					this.isLogining = false
 					if (res && res.data.responseCode === 200) {
 						that.$store.commit('setLogin', true)
+						console.log(res.data.resultData)
+						that.$store.commit('setOpenId', res.data.resultData)
+						console.log(that.$store.state.openId)
 						that.$router.push('/task-list')
 					} else {
 						Dialog.alert({

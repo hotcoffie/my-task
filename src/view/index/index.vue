@@ -44,6 +44,7 @@
 		},
 		data() {
 			return {
+				code:'',
 				img: require('../../img/logo.jpg'),
 				phoneNum: '',
 				phoneNumErr: '',
@@ -54,8 +55,8 @@
 		},
 		created() {
 			let that = this
-			let code = getUrlParam('code')
-			if (!code) {
+			this.code = getUrlParam('code')
+			if (!this.code) {
 				Dialog.alert({
 					title: '错误',
 					message: '请从公众号中打开此页面！'
@@ -67,7 +68,7 @@
 
 				return
 			}
-			axios.get('http://192.168.1.127:8080/openGet?code=' + code).then(res => {
+			axios.get('http://192.168.1.127:8080/openGet?code=' + that.code).then(res => {
 				if (res && res.data.responseCode === 200 && res.data.resultData) {
 					that.$store.commit('setLogin', true)
 					that.$store.commit('setOpenId', res.data.resultData)
@@ -87,8 +88,7 @@
 		},
 		methods: {
 			login() {
-				let code = getUrlParam('code')
-				if (!code) {
+				if (!this.code) {
 					Dialog.alert({
 						title: '错误',
 						message: '请从公众号中打开此页面！'
@@ -108,11 +108,11 @@
 				this.isLogining = true
 				let that = this
 				axios.post('http://192.168.1.127:8080/upPhone', {
-					code: code,
+					code: this.code,
 					phone: that.phoneNum,
 					veryCode: that.pwd
 				}, {
-					timeout: 3000
+					timeout: 5000
 				}).then(res => {
 					this.isLogining = false
 					if (res && res.data.responseCode === 200) {
@@ -124,8 +124,9 @@
 							message: '登录失败，请检查手机号和密码！'
 						})
 					}
-				}).catch(() => {
+				}).catch((err) => {
 					this.isLogining = false
+					console.error(err)
 					Dialog.alert({
 						title: '错误',
 						message: '系统错误，请稍后再试！'

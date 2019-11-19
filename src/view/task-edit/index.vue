@@ -94,7 +94,7 @@ export default {
       this.title = "编辑作业"
 
       let that = this
-      axios.get('http://lexuetong.labwinner.com/getTaskDetail', {
+      axios.get('/api/getTaskDetail', {
         params: {
           openId: that.$store.state.openId,
           id: that.taskId
@@ -149,7 +149,7 @@ export default {
     onClickCommit() {
       let that = this
       that.isLoading = true
-      axios.post('http://lexuetong.labwinner.com/uploadHomework', {
+      axios.post('/api/uploadHomework', {
         openId: that.$store.state.openId,
         id: that.taskId,
         type: that.courseCode,
@@ -219,7 +219,7 @@ export default {
     },
     queryToken() {
       let that = this
-      axios.get('http://lexuetong.labwinner.com/token')
+      axios.get('/api/token')
           .then((res) => {
             if (res.data.responseCode === 200) {
               that.$store.commit('setPicToken', res.data.resultData)

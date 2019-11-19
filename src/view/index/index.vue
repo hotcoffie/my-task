@@ -62,7 +62,7 @@ export default {
     }
     let that = this
     this.code = getUrlParam('code')
-    axios.get('http://lexuetong.labwinner.com/openGet?code=' + that.code).then(res => {
+    axios.get('/api/openGet?code=' + that.code).then(res => {
       if (res && res.data.responseCode === 200 && res.data.resultData) {
         that.$store.commit('setLogin', true)
         that.$store.commit('setOpenId', res.data.resultData)
@@ -91,7 +91,7 @@ export default {
       }
 
       if (!this.code) {
-        window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf161316e116826fa&redirect_uri=http%3a%2f%2f58ujdn.natappfree.cc/index.html&response_type=code&scope=snsapi_base&state=123&connect_redirect=1#wechat_redirect'
+        window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf161316e116826fa&redirect_uri=http%3a%2f%2flexuetong.labwinner.com/index.html&response_type=code&scope=snsapi_base&state=123&connect_redirect=1#wechat_redirect'
         return
       }
       if (!this.phoneNum || isNaN(this.phoneNum) || this.phoneNum.length !== 11) {
@@ -106,7 +106,7 @@ export default {
 
       this.isLogining = true
       let that = this
-      axios.post('http://lexuetong.labwinner.com/upPhone', {
+      axios.post('/api/upPhone', {
         code: this.code,
         phone: that.phoneNum,
         veryCode: that.pwd
@@ -147,7 +147,7 @@ function getUrlParam(name) {
     let r = search.substr(0).match(reg)
     if (r !== null) return unescape(r[2])
   }
-  window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf161316e116826fa&redirect_uri=http%3a%2f%2f58ujdn.natappfree.cc/index.html&response_type=code&scope=snsapi_base&state=123&connect_redirect=1#wechat_redirect'
+  window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf161316e116826fa&redirect_uri=http%3a%2f%2flexuetong.labwinner.com&response_type=code&scope=snsapi_base&state=123&connect_redirect=1#wechat_redirect'
   return null
 }
 </script>

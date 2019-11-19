@@ -96,7 +96,7 @@
 		methods: {
 			refresh() {
 				let that = this
-				axios.get("http://lexuetong.labwinner.com/getAllTask", {
+				axios.get("/api/getAllTask", {
 					params: {
 						openId: that.$store.state.openId,
 						date: that.date
@@ -137,7 +137,7 @@
 			},
 			users(query) {
 				let that = this
-				axios.get("http://lexuetong.labwinner.com/getCountList", {
+				axios.get("/api/getCountList", {
 					params: {
 						openId: that.$store.state.openId,
 						id: query.id,

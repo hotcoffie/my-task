@@ -87,7 +87,7 @@ export default {
       this.$router.go(-1)
     }
     let that = this
-    axios.get('http://lexuetong.labwinner.com/getTaskDetail', {
+    axios.get('/api/getTaskDetail', {
       params: {
         openId: that.$store.state.openId,
         id: this.taskId
@@ -136,7 +136,7 @@ export default {
         status = 3
       }
       let that = this
-      axios.post('http://lexuetong.labwinner.com/updateTask', {
+      axios.post('/api/updateTask', {
         openId: that.$store.state.openId,
         id: that.signalId,
         status: status
@@ -189,7 +189,7 @@ export default {
     },
     updateTask(file, path) {
       let that = this
-      axios.post('http://lexuetong.labwinner.com/taskUpload', {
+      axios.post('/api/taskUpload', {
         fileName: file.file.name,
         type: file.file.type,
         path: path,
@@ -218,7 +218,7 @@ export default {
     },
     queryToken() {
       let that = this
-      axios.get('http://lexuetong.labwinner.com/token')
+      axios.get('/api/token')
           .then((res) => {
             if (res.data.responseCode === 200) {
               that.$store.commit('setPicToken', res.data.resultData)
@@ -231,7 +231,7 @@ export default {
               title: '删除附件',
               message: '确认删除这个附件吗？'
             }).then(() => {
-              axios.post('http://lexuetong.labwinner.com/fleDelete?id=' + data.fileId).then((res) => {
+              axios.post('/api/fleDelete?id=' + data.fileId).then((res) => {
                     if (res.data.responseCode === 200) {
                       resolve(true)
                     } else {

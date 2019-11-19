@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div v-for="task in tasks" :key="'today'+task.id" style="margin-bottom: 8px;">
+		<div v-for="task in tasks" :key="task.id" style="margin-bottom: 8px;">
 			<van-panel :title="task.course" :desc="'截止： '+task.endTime" @click="toDetail(task.id)">
 				<div slot="default" class="content">
 					{{task.content}}

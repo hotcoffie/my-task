@@ -8,7 +8,7 @@
         <h2 style="text-align: center;">乐学童</h2>
       </van-col>
     </van-row>
-
+    
     <van-cell-group>
       <van-field v-model="phoneNum" type="number" label="手机号" placeholder="请输入手机号" :error-message="phoneNumErr"
                  required></van-field>
@@ -23,127 +23,131 @@
   </div>
 </template>
 <script>
-  import {
-    Dialog,
-    Image,
-    Row,
-    Col,
-    Field,
-    CellGroup,
-    Toast,
-    Button
-  } from 'vant';
-  import axios from 'axios';
+import {
+  Dialog,
+  Image,
+  Row,
+  Col,
+  Field,
+  CellGroup,
+  Toast,
+  Button
+} from 'vant';
+import axios from 'axios';
 
-  export default {
-    components: {
-      [Button.name]: Button,
-      [Image.name]: Image,
-      [Row.name]: Row,
-      [Col.name]: Col,
-      [Field.name]: Field,
-      [Toast.name]: Toast,
-      [CellGroup.name]: CellGroup
-    },
-    data() {
-      return {
-        code: '',
-        img: require('../../img/logo.jpg'),
-        phoneNum: '',
-        phoneNumErr: '',
-        pwd: '',
-        pwdErr: '',
-        isLogining: false
-      }
-    },
-    beforeCreate() {
-      if (process.env.NODE_ENV === 'development') {
-        return
-      }
-      let that = this
-      this.code = getUrlParam('code')
-      axios.get('http://192.168.1.127:8080/openGet?code=' + that.code).then(res => {
-        if (res && res.data.responseCode === 200 && res.data.resultData) {
-          that.$store.commit('setLogin', true)
-          that.$store.commit('setOpenId', res.data.resultData)
-          that.$router.push('/task-list')
-        } else {
-          Dialog.alert({
-            title: '未登录',
-            message: '未检索到用户数据，请重新登录！'
-          })
-        }
-      }).catch(() => {
+export default {
+  components: {
+    [Button.name]: Button,
+    [Image.name]: Image,
+    [Row.name]: Row,
+    [Col.name]: Col,
+    [Field.name]: Field,
+    [Toast.name]: Toast,
+    [CellGroup.name]: CellGroup
+  },
+  data() {
+    return {
+      code: '',
+      img: require('../../img/logo.jpg'),
+      phoneNum: '',
+      phoneNumErr: '',
+      pwd: '',
+      pwdErr: '',
+      isLogining: false
+    }
+  },
+  beforeCreate() {
+    if (process.env.NODE_ENV === 'development') {
+      return
+    }
+    let that = this
+    this.code = getUrlParam('code')
+    axios.get('http://lexuetong.labwinner.com/openGet?code=' + that.code).then(res => {
+      if (res && res.data.responseCode === 200 && res.data.resultData) {
+        that.$store.commit('setLogin', true)
+        that.$store.commit('setOpenId', res.data.resultData)
+        that.$router.push('/task-list')
+      } else {
         Dialog.alert({
           title: '未登录',
           message: '未检索到用户数据，请重新登录！'
         })
+      }
+    }).catch(() => {
+      Dialog.alert({
+        title: '未登录',
+        message: '未检索到用户数据，请重新登录！'
       })
-    },
-    methods: {
-      login() {
-        if (process.env.NODE_ENV === 'development') {
-          this.$store.commit('setLogin', true)
-          this.$store.commit('setOpenId', 'oVqvvt-PZxlHb-BanjsaTx8LbkzQ')
-          this.$router.push('/task-list')
-          return
-        }
+    })
+  },
+  methods: {
+    login() {
+      if (process.env.NODE_ENV === 'development') {
+        this.$store.commit('setLogin', true)
+        this.$store.commit('setOpenId', 'oVqvvt-PZxlHb-BanjsaTx8LbkzQ')
+        this.$store.commit('setPicUrl', 'http://xueyy.cn')
+        this.$router.push('/task-list')
+        return
+      }
 
-        if (!this.code) {
-          window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf161316e116826fa&redirect_uri=http%3a%2f%2f58ujdn.natappfree.cc/index.html&response_type=code&scope=snsapi_base&state=123&connect_redirect=1#wechat_redirect'
-          return
-        }
-        if (!this.phoneNum || isNaN(this.phoneNum) || this.phoneNum.length !== 11) {
-          this.phoneNumErr = '手机号格式错误!'
-        }
-        if (!this.pwd || this.pwd.length !== 6) {
-          this.pwdErr = '密码格式错误!'
-        }
-        if (this.phoneNumErr.length > 0 || this.pwdErr.length > 0) {
-          return
-        }
+      if (!this.code) {
+        window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf161316e116826fa&redirect_uri=http%3a%2f%2f58ujdn.natappfree.cc/index.html&response_type=code&scope=snsapi_base&state=123&connect_redirect=1#wechat_redirect'
+        return
+      }
+      if (!this.phoneNum || isNaN(this.phoneNum) || this.phoneNum.length !== 11) {
+        this.phoneNumErr = '手机号格式错误!'
+      }
+      if (!this.pwd || this.pwd.length !== 6) {
+        this.pwdErr = '密码格式错误!'
+      }
+      if (this.phoneNumErr.length > 0 || this.pwdErr.length > 0) {
+        return
+      }
 
-        this.isLogining = true
-        let that = this
-        axios.post('http://192.168.1.127:8080/upPhone', {
-          code: this.code,
-          phone: that.phoneNum,
-          veryCode: that.pwd
-        }, {
-          timeout: 5000
-        }).then(res => {
-          this.isLogining = false
-          if (res && res.data.responseCode === 200) {
-            that.$store.commit('setLogin', true)
-            that.$store.commit('setOpenId', res.data.resultData)
-            that.$router.push('/task-list')
-          } else {
-            Dialog.alert({
-              title: '错误',
-              message: '登录失败，请检查手机号和密码！'
-            })
-          }
-        }).catch((err) => {
-          this.isLogining = false
-          console.error(err)
+      this.isLogining = true
+      let that = this
+      axios.post('http://lexuetong.labwinner.com/upPhone', {
+        code: this.code,
+        phone: that.phoneNum,
+        veryCode: that.pwd
+      }, {
+        timeout: 5000
+      }).then(res => {
+        this.isLogining = false
+        if (res && res.data.responseCode === 200) {
+          that.$store.commit('setLogin', true)
+          let rd = res.data.resultData
+          that.$store.commit('setOpenId', rd.openId)
+          that.$store.commit('setPicToken', rd.token)
+          that.$store.commit('setPicUrl', rd.url)
+          that.$router.push('/task-list')
+        } else {
           Dialog.alert({
             title: '错误',
-            message: '系统错误，请稍后再试！'
+            message: '登录失败，请检查手机号和密码！'
           })
+        }
+      }).catch((err) => {
+        this.isLogining = false
+        console.error(err)
+        Dialog.alert({
+          title: '错误',
+          message: '系统错误，请稍后再试！'
         })
-      }
+      })
     }
   }
+}
 
-  function getUrlParam(name) {
-    let reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')
-    let url = window.location.href.split('#')[0]
-    let search = url.split('?')[1]
-    if (search) {
-      let r = search.substr(0).match(reg)
-      if (r !== null) return unescape(r[2])
-    }
-    window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf161316e116826fa&redirect_uri=http%3a%2f%2f58ujdn.natappfree.cc/index.html&response_type=code&scope=snsapi_base&state=123&connect_redirect=1#wechat_redirect'
-    return null
+function getUrlParam(name) {
+  let reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')
+  let url = window.location.href.split('#')[0]
+  let search = url.split('?')[1]
+  if (search) {
+    let r = search.substr(0).match(reg)
+    if (r !== null) return unescape(r[2])
   }
+  window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf161316e116826fa&redirect_uri=http%3a%2f%2f58ujdn.natappfree.cc/index.html&response_type=code&scope=snsapi_base&state=123&connect_redirect=1#wechat_redirect'
+  return null
+}
 </script>

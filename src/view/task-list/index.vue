@@ -29,7 +29,7 @@
 		<van-dialog v-model="showDialog" :title="dialogTitle" show-cancel-button>
 			<van-cell-group>
 				<div v-for="(count,index) in countList" :key="index">
-					<van-cell :title="count.name" :value="count.uploadTime" />
+					<van-cell :title="count.name" :value="count.uploadTime"></van-cell>
 				</div>
 			</van-cell-group>
 		</van-dialog>
@@ -121,6 +121,10 @@
 					that.$toast.fail('请求失败')
 					that.isLoading = false
 				})
+				if (process.env.NODE_ENV === 'development') {
+					this.$store.commit('setMaster', true)
+				}
+
 			},
 			changeDate(picker) {
 				let month = (picker.getMonth() + 1).toString().padStart(2, '0');

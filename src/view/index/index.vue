@@ -47,7 +47,6 @@ export default {
   },
   data() {
     return {
-      code: '',
       img: require('../../img/logo.jpg'),
       phoneNum: '',
       phoneNumErr: '',
@@ -61,12 +60,20 @@ export default {
       return
     }
     let that = this
-    this.code = getUrlParam('code')
-    axios.get('/api/openGet?code=' + that.code).then(res => {
-      if (res && res.data.responseCode === 200 && res.data.resultData) {
-        that.$store.commit('setLogin', true)
-        that.$store.commit('setOpenId', res.data.resultData)
-        that.$router.push('/task-list')
+    let code = getUrlParam('code')
+    
+    if (!code) {
+      window.location.href = '/api/noCode'
+    }
+    
+    axios.get('/api/openGet?code=' + code).then(res => {
+      if (res && res.data.responseCode === 200) {
+        let result = res.data.resultData
+        that.$store.commit('setOpenId', result.openId)
+        if (result.hasRegisted) {
+          that.$store.commit('setLogin', true)
+          that.$router.push('/task-list')
+        }
       } else {
         Dialog.alert({
           title: '未登录',
@@ -82,6 +89,7 @@ export default {
   },
   methods: {
     login() {
+      //测试用代码
       if (process.env.NODE_ENV === 'development') {
         this.$store.commit('setLogin', true)
         this.$store.commit('setOpenId', 'oVqvvt-PZxlHb-BanjsaTx8LbkzQ')
@@ -90,10 +98,12 @@ export default {
         return
       }
 
-      if (!this.code) {
-        window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf161316e116826fa&redirect_uri=http%3a%2f%2flexuetong.labwinner.com/index.html&response_type=code&scope=snsapi_base&state=123&connect_redirect=1#wechat_redirect'
-        return
+      //缓存没有openId则重新向腾讯请求
+      let openId = this.$store.state.openId
+      if (!openId) {
+        window.location.href = '/api/noCode'
       }
+
       if (!this.phoneNum || isNaN(this.phoneNum) || this.phoneNum.length !== 11) {
         this.phoneNumErr = '手机号格式错误!'
       }
@@ -107,7 +117,7 @@ export default {
       this.isLogining = true
       let that = this
       axios.post('/api/upPhone', {
-        code: this.code,
+        openId: openId,
         phone: that.phoneNum,
         veryCode: that.pwd
       }, {
@@ -116,10 +126,9 @@ export default {
         this.isLogining = false
         if (res && res.data.responseCode === 200) {
           that.$store.commit('setLogin', true)
-          let rd = res.data.resultData
-          that.$store.commit('setOpenId', rd.openId)
-          that.$store.commit('setPicToken', rd.token)
-          that.$store.commit('setPicUrl', rd.url)
+          let result = res.data.resultData
+          that.$store.commit('setPicToken', result.token)
+          that.$store.commit('setPicUrl', result.url)
           that.$router.push('/task-list')
         } else {
           Dialog.alert({
@@ -147,7 +156,6 @@ function getUrlParam(name) {
     let r = search.substr(0).match(reg)
     if (r !== null) return unescape(r[2])
   }
-  window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf161316e116826fa&redirect_uri=http%3a%2f%2flexuetong.labwinner.com&response_type=code&scope=snsapi_base&state=123&connect_redirect=1#wechat_redirect'
   return null
 }
 </script>

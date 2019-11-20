@@ -63,7 +63,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresLogin && (!store.state.isLogin || !store.state.openId)) {
-    next('/');
+    next('index');
     return
   }
 

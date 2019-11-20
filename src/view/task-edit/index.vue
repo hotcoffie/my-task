@@ -96,7 +96,7 @@
     },
     created() {
       this.taskId = this.$route.query.id ? this.$route.query.id : -1
-      if (this.taskId) {
+      if (this.taskId > 0) {
         this.title = "编辑作业"
 
         let that = this
@@ -239,7 +239,7 @@
           .then((res) => {
             if (res.data.responseCode === 200) {
               that.$store.commit('setPicToken', res.data.resultData)
-            }else{
+            } else {
               Dialog.alert({
                 title: '错误',
                 message: res.data.responseMsg

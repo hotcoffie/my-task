@@ -118,7 +118,10 @@
             that.isLoading = false
             this.$store.commit('setMaster', info.master)
           } else {
-            that.$toast.fail(res.data.responseMsg)
+            Dialog.alert({
+              title: '错误',
+              message: res.data.responseMsg
+            })
             that.isLoading = false
           }
         }).catch(err => {
@@ -158,7 +161,10 @@
             that.countList = res.data.resultData
             that.showDialog = true
           } else {
-            that.$toast.fail(res.data.responseMsg)
+            Dialog.alert({
+              title: '错误',
+              message: res.data.responseMsg
+            })
           }
         }).catch(err => {
           console.error(err)

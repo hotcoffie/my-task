@@ -182,7 +182,10 @@
               }
             )
           } else {
-            that.$toast.fail(res.data.responseMsg)
+            Dialog.alert({
+              title: '错误',
+              message: res.data.responseMsg
+            })
             that.isLoading = false
           }
         }).catch(err => {
@@ -236,6 +239,11 @@
           .then((res) => {
             if (res.data.responseCode === 200) {
               that.$store.commit('setPicToken', res.data.resultData)
+            }else{
+              Dialog.alert({
+                title: '错误',
+                message: res.data.responseMsg
+              })
             }
           })
       }

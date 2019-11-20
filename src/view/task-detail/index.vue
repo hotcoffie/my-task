@@ -157,8 +157,8 @@
             })
           } else {
             Dialog.alert({
-              title: '失败',
-              message: '作业状态修改失败！'
+              title: '错误',
+              message: res.data.responseMsg
             })
           }
         })
@@ -228,6 +228,11 @@
           .then((res) => {
             if (res.data.responseCode === 200) {
               that.$store.commit('setPicToken', res.data.resultData)
+            } else {
+              Dialog.alert({
+                title: '错误',
+                message: res.data.responseMsg
+              })
             }
           })
       },
@@ -243,7 +248,7 @@
                   } else {
                     Dialog.alert({
                       title: '删除附件',
-                      message: '删除失败，请稍后再试？'
+                      message: res.data.responseMsg
                     }).then(() => {
                       reject(false)
                     })

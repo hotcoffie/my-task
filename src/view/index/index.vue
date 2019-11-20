@@ -78,8 +78,8 @@
           }
         } else {
           Dialog.alert({
-            title: '未绑定',
-            message: '未检索到用户数据，请重新绑定！'
+            title: '错误',
+            message: res.data.responseMsg
           })
         }
       }).catch(() => {
@@ -134,7 +134,7 @@
           } else {
             Dialog.alert({
               title: '错误',
-              message: '绑定失败，请检查手机号和邀请码！'
+              message: res.data.responseMsg
             })
           }
         }).catch((err) => {

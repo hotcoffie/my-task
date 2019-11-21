@@ -14,22 +14,21 @@ const routes = [{
     name: 'index',
     component: () => import('./view/index'),
     meta: {
-      title: '登录'
+      title: '作业侠'
     }
   },
   {
-    name: 'user',
-    component: () => import('./view/user'),
+    name: 'bind',
+    component: () => import('./view/bind'),
     meta: {
-      title: '个人中心',
-      requiresLogin: true
+      title: '绑定'
     }
   },
   {
-    name: 'task-list',
-    component: () => import('./view/task-list'),
+    name: 'task-detail',
+    component: () => import('./view/task-detail'),
     meta: {
-      title: '我的作业',
+      title: '作业详情',
       requiresLogin: true
     }
   },
@@ -40,14 +39,6 @@ const routes = [{
       title: '编辑作业',
       requiresLogin: true,
       requiresMaster: true
-    }
-  },
-  {
-    name: 'task-detail',
-    component: () => import('./view/task-detail'),
-    meta: {
-      title: '作业详情',
-      requiresLogin: true
     }
   }
 ];
@@ -63,7 +54,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresLogin && (!store.state.isLogin || !store.state.openId)) {
-    next('index');
+    next('bind');
     return
   }
 
@@ -79,7 +70,6 @@ router.beforeEach((to, from, next) => {
 
   if (store.state.isMaster) {
     next();
-    return
   }
 
 });
